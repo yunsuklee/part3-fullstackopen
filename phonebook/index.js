@@ -27,7 +27,11 @@ let persons = [
   } 
 ]
 
-app.use(morgan('tiny')) // Morgan middleware fn
+morgan.token('data-sent', (req, res) => { // Morgan token to display data sent in POST requests
+  return JSON.stringify(req.body)
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
 
 app.get('/', (req, res) => { // Root page
   res.send('<h1>Hello, World!</h1>')
@@ -98,6 +102,7 @@ app.post('/api/persons', (req, res) => { // Creating a new person
   persons = persons.concat(person) // Creating new persons array
 
   res.json(person)
+
 })
 
 const PORT = 3001
