@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 
 import Filter from './components/Filter'
-import People from './components/People'
+import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
-import personServices from './services/people'
+import personServices from './services/persons'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [people, setPerson] = useState([])
+  const [persons, setPerson] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
@@ -17,19 +17,19 @@ const App = () => {
   useEffect(() => {
     personServices
       .getAll()
-      .then(initialPeople => {
-        setPerson(initialPeople)
+      .then(initialPersons => {
+        setPerson(initialPersons)
       })
   }, [])
 
   const getId = () => {
-    let id = people.length + 1
+    let id = persons.length + 1
 
-    for (let i = 0; i < people.length; i++) {
+    for (let i = 0; i < persons.length; i++) {
       let found = 0
 
-      for (let j = 0; j < people.length; j++) {
-        if (i + 1 === people[j].id) found++
+      for (let j = 0; j < persons.length; j++) {
+        if (i + 1 === persons[j].id) found++
       }
 
       if (!found) {
@@ -43,7 +43,7 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const person = people.find(p => p.name.toLowerCase() === newName.toLowerCase())
+    const person = persons.find(p => p.name.toLowerCase() === newName.toLowerCase())
 
     if (person && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       const changedPerson = { ...person, number: newNumber }
@@ -51,7 +51,7 @@ const App = () => {
       personServices
         .update(changedPerson.id, changedPerson)
         .then(returnedPerson => {
-          setPerson(people.map(person => person.id !== changedPerson.id ? person : changedPerson))
+          setPerson(persons.map(person => person.id !== changedPerson.id ? person : changedPerson))
           
           setMessageType('success')
           setMessage(
@@ -69,7 +69,7 @@ const App = () => {
           setTimeout(() => {
             setMessage(null)
           }, 5000);
-          setPerson(people.filter(p => p.id !== changedPerson.id))
+          setPerson(persons.filter(p => p.id !== changedPerson.id))
         })
 
     } else {
@@ -84,7 +84,7 @@ const App = () => {
       personServices
         .create(newPerson)
         .then(response => {
-          setPerson(people.concat(newPerson))
+          setPerson(persons.concat(newPerson))
           setMessageType('success')
           setMessage(
             `Added ${newName}` 
@@ -117,25 +117,25 @@ const App = () => {
   const handlePersonDelete = (id) => {
     console.log(id)
 
-    if (window.confirm(`Delete ${people[id - 1].name}?`)) {
+    if (window.confirm(`Delete ${persons[id - 1].name}?`)) {
       personServices
         .deletePerson(id)
         .then(response => {
           personServices
             .getAll()
-            .then(initialPeople => {
-              setPerson(initialPeople)
+            .then(initialPersons => {
+              setPerson(initialPersons)
             })
         })
     }
   }
 
-  const peopleToShow = people.filter(person => 
+  const personsToShow = persons.filter(person => 
     person.name.toLowerCase().includes(newSearch.toLowerCase())  
   )
 
   return (
-    <div>
+    <div id="App">
       <h1>Phonebook</h1>
       <Notification 
         message={message}
@@ -145,7 +145,7 @@ const App = () => {
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}
       />
-      <h2>add a new</h2>
+      <h2>Add new contact</h2>
       <PersonForm 
         addPerson={addPerson}
         newName={newName}
@@ -154,9 +154,9 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <People 
-        peopleToShow={peopleToShow} 
-        peopleDeleter={handlePersonDelete}
+      <Persons 
+        personsToShow={personsToShow} 
+        personsDeleter={handlePersonDelete}
       />
     </div>
   )

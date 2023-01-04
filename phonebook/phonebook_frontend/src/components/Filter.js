@@ -1,6 +1,6 @@
 const Filter = ({ newSearch, handleSearchChange }) => (
   <div>
-    filter shown with <input value={newSearch} onChange={handleSearchChange} />
+    Search: <input value={newSearch} onChange={handleSearchChange} />
   </div>
 )
 

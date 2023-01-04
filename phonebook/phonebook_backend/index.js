@@ -1,6 +1,7 @@
 const { response } = require('express')
 const express = require('express') // Imports express
 const morgan = require('morgan')
+const cors = require('cors') // Imports cors middleware
 
 const app = express() // Uses express fn to create an express app
 
@@ -32,6 +33,8 @@ morgan.token('data-sent', (req, res) => { // Morgan token to display data sent i
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
+app.use(express.static('build')) // To show static content
+app.use(cors()) // To allow requests from other origins
 
 app.get('/', (req, res) => { // Root page
   res.send('<h1>Hello, World!</h1>')
@@ -100,12 +103,10 @@ app.post('/api/persons', (req, res) => { // Creating a new person
   }
 
   persons = persons.concat(person) // Creating new persons array
-
   res.json(person)
-
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 8080
 app.listen(PORT, () => { // Server's port
   console.log(`Server running on port ${PORT}`)
 })
