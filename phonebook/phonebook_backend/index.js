@@ -27,7 +27,7 @@ app.get('/api/persons', (req, res) => { // Fetch data
 app.get('/info', (req, res) => { // Phonebook info
   res.send(
     `
-    <p>Phonebook has info for ${persons.length} people</p>
+    <p>Phonebook has info for ${Person.length} people</p>
     <p>${Date()}</p>
     `
   )
@@ -59,8 +59,6 @@ const generateNewId = () => { // Random id generator
 app.post('/api/persons', (req, res) => { // Creating a new person
   const body = req.body // All info is sent in the request's body
 
-  console.log(body)
-
   if (!body.name) { // No name in request
     return res.status(400).json({
       error: 'name missing'
@@ -69,11 +67,7 @@ app.post('/api/persons', (req, res) => { // Creating a new person
     return res.status(400).json({
       error: 'number missing'
     })
-  } else if (Person.findOne({ 'name': body.name })) { // Existing name 
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  } 
 
   const person = new Person({
     name: body.name,
