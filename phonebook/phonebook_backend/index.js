@@ -1,32 +1,9 @@
-const { response } = require('express')
 const express = require('express') // Imports express
+const app = express() // Uses express fn to create an express app
+require('dotenv').config()
 const morgan = require('morgan')
 const cors = require('cors') // Imports cors middleware
-
-const app = express() // Uses express fn to create an express app
-
-let persons = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  } 
-]
+const Person = require('./models/person')
 
 morgan.token('data-sent', (req, res) => { // Morgan token to display data sent in POST requests
   return JSON.stringify(req.body)
@@ -34,6 +11,7 @@ morgan.token('data-sent', (req, res) => { // Morgan token to display data sent i
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
 app.use(express.static('build')) // To show static content
+app.use(express.json()) // To access data easily
 app.use(cors()) // To allow requests from other origins
 
 app.get('/', (req, res) => { // Root page
@@ -41,7 +19,9 @@ app.get('/', (req, res) => { // Root page
 })
 
 app.get('/api/persons', (req, res) => { // Fetch data
-  res.json(persons)
+  Person.find({}).then(persons => {
+    res.json(persons)
+  })
 })
 
 app.get('/info', (req, res) => { // Phonebook info
@@ -54,12 +34,9 @@ app.get('/info', (req, res) => { // Phonebook info
 })
 
 app.get('/api/persons/:id', (req, res) => { // Single data fetch
-  const id = Number(req.params.id)  
-  const person = persons.find(person => person.id === id)
-
-  person 
-    ? res.json(person)
-    : res.status(404).end()
+  Person.findById(req.params.id).then(person => {
+    res.json(person)
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => { // Deleting single data
@@ -69,8 +46,7 @@ app.delete('/api/persons/:id', (req, res) => { // Deleting single data
   res.status(204).end()
 })
 
-app.use(express.json()) // To access data easily
-
+/*
 const generateNewId = () => { // Random id generator
   let id = Math.floor(Math.random() * 100)
   while (persons.find(person => person.id === id)) { // Should keep running until a unique id is found
@@ -78,9 +54,12 @@ const generateNewId = () => { // Random id generator
   }
   return id
 }
+*/
 
 app.post('/api/persons', (req, res) => { // Creating a new person
   const body = req.body // All info is sent in the request's body
+
+  console.log(body)
 
   if (!body.name) { // No name in request
     return res.status(400).json({
@@ -90,20 +69,20 @@ app.post('/api/persons', (req, res) => { // Creating a new person
     return res.status(400).json({
       error: 'number missing'
     })
-  } else if (persons.find(p => p.name.toLowerCase() === body.name.toLowerCase())) { // Existing name 
+  } else if (Person.findOne({ 'name': body.name })) { // Existing name 
     return res.status(400).json({
       error: 'name must be unique'
     })
   }
 
-  const person = {
-    id: generateNewId(),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(person) // Creating new persons array
-  res.json(person)
+  person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 })
 
 const PORT = process.env.PORT || 8080
