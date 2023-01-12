@@ -19,7 +19,6 @@ app.use(express.static('build')) // To show static content
 app.use(express.json()) // To access data easily
 app.use(cors()) // To allow requests from other origins
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
-app.use(errorHandler)
 
 app.get('/', (req, res) => { // Root page
   res.send('<h1>Hello, World!</h1>')
@@ -87,6 +86,12 @@ app.post('/api/persons', (req, res) => { // Creating a new person
     res.json(savedPerson)
   })
 })
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT, () => { // Server's port
