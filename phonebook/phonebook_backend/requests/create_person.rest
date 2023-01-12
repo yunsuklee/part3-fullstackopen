@@ -11,6 +11,15 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
+  "name": "James Bond",
+  "number": "000"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
   "name": "Arto Hellas",
   "number": "123456789"
 }

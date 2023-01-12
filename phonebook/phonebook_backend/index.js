@@ -77,17 +77,40 @@ app.post('/api/persons', (req, res) => { // Creating a new person
     })
   } 
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
-
-  person.save().then(savedPerson => {
-    res.json(savedPerson)
-  })
+  Person.findOne({ name: body.name })
+    .then(person => {
+      if(person) {
+        res.redirect(`/`)
+      } else {
+        const person = new Person({
+          name: body.name,
+          number: body.number
+        })
+      
+        person.save().then(savedPerson => {
+          res.json(savedPerson)
+        })
+      }
+    })
+    
 })
 
-const unknownEndpoint = (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => { // Updating existing person
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {
+      res.json(updatedPerson)
+    })
+    .catch(err => next(err))
+})
+
+const unknownEndpoint = (req, res) => { // Handling unkown endpoints
   res.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
