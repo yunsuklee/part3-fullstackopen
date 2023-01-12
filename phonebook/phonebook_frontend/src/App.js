@@ -37,7 +37,6 @@ const App = () => {
         break
       } 
     }
-
     return id
   } 
 
@@ -116,8 +115,9 @@ const App = () => {
 
   const handlePersonDelete = (id) => {
     console.log(id)
+    console.log(persons.filter(p => p.id === id)[0].name)
 
-    if (window.confirm(`Delete ${persons[id - 1].name}?`)) {
+    if (window.confirm(`Delete ${persons.filter(p => p.id === id)[0].name}?`)) {
       personServices
         .deletePerson(id)
         .then(response => {
