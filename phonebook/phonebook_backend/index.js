@@ -1,18 +1,25 @@
 const express = require('express') // Imports express
 const app = express() // Uses express fn to create an express app
-require('dotenv').config()
-const morgan = require('morgan')
+require('dotenv').config() // Imports library to handle .env
+const morgan = require('morgan') // Imports middleware to handle requests
 const cors = require('cors') // Imports cors middleware
-const Person = require('./models/person')
+const Person = require('./models/person') // Imports Mongoose person model
+const { response } = require('express')
 
 morgan.token('data-sent', (req, res) => { // Morgan token to display data sent in POST requests
   return JSON.stringify(req.body)
 })
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
+const errorHandler = (err, req, res, next) => {
+  console.log(err.message)
+  next(err)
+}
+
 app.use(express.static('build')) // To show static content
 app.use(express.json()) // To access data easily
 app.use(cors()) // To allow requests from other origins
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data-sent')) // Morgan middleware fn
+app.use(errorHandler)
 
 app.get('/', (req, res) => { // Root page
   res.send('<h1>Hello, World!</h1>')
@@ -25,25 +32,27 @@ app.get('/api/persons', (req, res) => { // Fetch data
 })
 
 app.get('/info', (req, res) => { // Phonebook info
-  res.send(
-    `
+  res.send(`
     <p>Phonebook has info for ${Person.length} people</p>
-    <p>${Date()}</p>
-    `
+    <p>${Date()}</p>`
   )
 })
 
-app.get('/api/persons/:id', (req, res) => { // Single data fetch
-  Person.findById(req.params.id).then(person => {
-    res.json(person)
-  })
+app.get('/api/persons/:id', (req, res, err) => { // Single data fetch
+  Person.findById(req.params.id)
+    .then(person => {
+      if(person) res.json(person)
+      else res.status(404).end()
+    })
+    .catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (req, res) => { // Deleting single data
-  const id = Number(req.params.id)  
-  persons = persons.filter(person => person.id !== id)
-
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => { // Deleting single data
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(err => next(err))
 })
 
 /*
