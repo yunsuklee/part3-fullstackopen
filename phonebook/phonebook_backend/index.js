@@ -80,7 +80,7 @@ app.post('/api/persons', (req, res) => { // Creating a new person
   Person.findOne({ name: body.name })
     .then(person => {
       if(person) {
-        res.redirect(`/`)
+        res.redirect(`/api/persons/${person.id}`)
       } else {
         const person = new Person({
           name: body.name,
@@ -96,6 +96,7 @@ app.post('/api/persons', (req, res) => { // Creating a new person
 })
 
 app.put('/api/persons/:id', (req, res, next) => { // Updating existing person
+  console.log('updating')
   const body = req.body
 
   const person = {
