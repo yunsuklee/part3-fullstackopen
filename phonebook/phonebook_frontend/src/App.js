@@ -22,24 +22,6 @@ const App = () => {
       })
   }, [])
 
-  // const getId = () => {
-  //   let id = persons.length + 1
-
-  //   for (let i = 0; i < persons.length; i++) {
-  //     let found = 0
-
-  //     for (let j = 0; j < persons.length; j++) {
-  //       if (i + 1 === persons[j].id) found++
-  //     }
-
-  //     if (!found) {
-  //       id = i + 1
-  //       break
-  //     } 
-  //   }
-  //   return id
-  // } 
-
   const addPerson = (event) => {
     event.preventDefault()
     const person = persons.find(p => p.name.toLowerCase() === newName.toLowerCase())
