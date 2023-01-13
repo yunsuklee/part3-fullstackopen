@@ -12,6 +12,10 @@ morgan.token('data-sent', (req, res) => { // Morgan token to display data sent i
 
 const errorHandler = (err, req, res, next) => {
   console.log(err.message)
+
+  if (err.name === 'ValidationError')
+    return res.status(400).send({ error: 'error.message' })
+
   next(err)
 }
 
@@ -64,18 +68,8 @@ const generateNewId = () => { // Random id generator
 }
 */
 
-app.post('/api/persons', (req, res) => { // Creating a new person
+app.post('/api/persons', (req, res, next) => { // Creating a new person
   const body = req.body // All info is sent in the request's body
-
-  if (!body.name) { // No name in request
-    return res.status(400).json({
-      error: 'name missing'
-    })
-  } else if (!body.number) { // No number in request
-    return res.status(400).json({
-      error: 'number missing'
-    })
-  } 
 
   Person.findOne({ name: body.name })
     .then(person => {
@@ -86,25 +80,24 @@ app.post('/api/persons', (req, res) => { // Creating a new person
           name: body.name,
           number: body.number
         })
-      
-        person.save().then(savedPerson => {
-          res.json(savedPerson)
-        })
+        person.save()
+          .then(savedPerson => {
+            res.json(savedPerson)
+          })
+          .catch(err => next(err))
       }
     })
-    
 })
 
 app.put('/api/persons/:id', (req, res, next) => { // Updating existing person
   console.log('updating')
-  const body = req.body
+  const { name, number } = req.body
 
-  const person = {
-    name: body.name,
-    number: body.number,
-  }
-
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  Person.findByIdAndUpdate(
+    req.params.id, 
+    { name, number },
+    { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedPerson => {
       res.json(updatedPerson)
     })
