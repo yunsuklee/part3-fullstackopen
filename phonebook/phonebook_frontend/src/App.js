@@ -81,7 +81,10 @@ const App = () => {
         })
         .catch(error => {
           setMessageType('error')
-          setMessage(`Person validation failed: Name should be at least 3 characters long. Both name and number are required.`)
+          setMessage(`Person validation failed:
+              Name should be at least 3 characters long. 
+              Number should have at least 8 numbers.
+              Both name and number are required.`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
