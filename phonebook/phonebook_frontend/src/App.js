@@ -22,23 +22,23 @@ const App = () => {
       })
   }, [])
 
-  const getId = () => {
-    let id = persons.length + 1
+  // const getId = () => {
+  //   let id = persons.length + 1
 
-    for (let i = 0; i < persons.length; i++) {
-      let found = 0
+  //   for (let i = 0; i < persons.length; i++) {
+  //     let found = 0
 
-      for (let j = 0; j < persons.length; j++) {
-        if (i + 1 === persons[j].id) found++
-      }
+  //     for (let j = 0; j < persons.length; j++) {
+  //       if (i + 1 === persons[j].id) found++
+  //     }
 
-      if (!found) {
-        id = i + 1
-        break
-      } 
-    }
-    return id
-  } 
+  //     if (!found) {
+  //       id = i + 1
+  //       break
+  //     } 
+  //   }
+  //   return id
+  // } 
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -61,39 +61,47 @@ const App = () => {
           }, 5000);
         })
         .catch(error => {
+          console.log(error)
           setMessageType('error')
-          setMessage(
-            `Information of ${newName} has already been removed from server`
-          )
+
+          if (error.name === 'AxiosError') {
+            setMessage(`Person validation failed: Name should be at least 3 characters long. Both name and number are required.`)
+          } else {
+            setMessage(`Information of ${newName} has already been removed from server`)
+          }
+
           setTimeout(() => {
             setMessage(null)
-          }, 5000);
-          setPerson(persons.filter(p => p.id !== changedPerson.id))
+          }, 5000)
+          personServices
+            .getAll()
+            .then(initialPersons => {
+              setPerson(initialPersons)
+            })
         })
-
     } else {
       const newPerson = {
         name: newName,
         number: newNumber,
-        id: getId()
-      }
-
-      console.log(newPerson.id)
-      
+      }      
       personServices
         .create(newPerson)
-        .then(response => {
-          setPerson(persons.concat(newPerson))
+        .then(createdPerson => {
+          setPerson(persons.concat(createdPerson))
           setMessageType('success')
-          setMessage(
-            `Added ${newName}` 
-          )
+          setMessage(`Added ${newName}`)
           setTimeout(() => {
             setMessage(null)
-          }, 5000);
+          }, 5000)
+        })
+        .catch(error => {
+          setMessageType('error')
+          setMessage(`Person validation failed: Name should be at least 3 characters long. Both name and number are required.`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
-      
     setNewName('')
     setNewNumber('')
   }
