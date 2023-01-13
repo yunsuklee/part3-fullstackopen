@@ -65,7 +65,10 @@ const App = () => {
           setMessageType('error')
 
           if (error.name === 'AxiosError') {
-            setMessage(`Person validation failed: Name should be at least 3 characters long. Both name and number are required.`)
+            setMessage(`Person validation failed:\n
+              Name should be at least 3 characters long.\n 
+              Number should have at least 8 numbers.\n
+              Both name and number are required.`)
           } else {
             setMessage(`Information of ${newName} has already been removed from server`)
           }

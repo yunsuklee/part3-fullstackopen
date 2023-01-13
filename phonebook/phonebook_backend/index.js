@@ -74,7 +74,7 @@ app.post('/api/persons', (req, res, next) => { // Creating a new person
   Person.findOne({ name: body.name })
     .then(person => {
       if(person) {
-        res.redirect(`/api/persons/${person.id}`)
+        res.status(409).redirect(`/api/persons/${person.id}`)
       } else {
         const person = new Person({
           name: body.name,
