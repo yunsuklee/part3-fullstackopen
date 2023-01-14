@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 
 import Filter from './components/Filter'
@@ -32,15 +33,14 @@ const App = () => {
       personServices
         .update(changedPerson.id, changedPerson)
         .then(returnedPerson => {
+          console.log(returnedPerson)
           setPerson(persons.map(person => person.id !== changedPerson.id ? person : changedPerson))
-          
+
           setMessageType('success')
-          setMessage(
-            `Updated ${newName}'s phone number` 
-          )
+          setMessage(`Updated ${newName}'s phone number`)
           setTimeout(() => {
             setMessage(null)
-          }, 5000);
+          }, 5000)
         })
         .catch(error => {
           console.log(error)
@@ -68,7 +68,7 @@ const App = () => {
       const newPerson = {
         name: newName,
         number: newNumber,
-      }      
+      }
       personServices
         .create(newPerson)
         .then(createdPerson => {
@@ -80,6 +80,7 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
+          console.log(error)
           setMessageType('error')
           setMessage(`Person validation failed:
               Name should be at least 3 characters long. 
@@ -117,6 +118,7 @@ const App = () => {
       personServices
         .deletePerson(id)
         .then(response => {
+          console.log(response)
           personServices
             .getAll()
             .then(initialPersons => {
@@ -126,23 +128,23 @@ const App = () => {
     }
   }
 
-  const personsToShow = persons.filter(person => 
-    person.name.toLowerCase().includes(newSearch.toLowerCase())  
+  const personsToShow = persons.filter(person =>
+    person.name.toLowerCase().includes(newSearch.toLowerCase())
   )
 
   return (
     <div id="App">
       <h1>Phonebook</h1>
-      <Notification 
+      <Notification
         message={message}
         messageType={messageType}
       />
-      <Filter 
+      <Filter
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}
       />
       <h2>Add new contact</h2>
-      <PersonForm 
+      <PersonForm
         addPerson={addPerson}
         newName={newName}
         newNumber={newNumber}
@@ -150,8 +152,8 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons 
-        personsToShow={personsToShow} 
+      <Persons
+        personsToShow={personsToShow}
         personsDeleter={handlePersonDelete}
       />
     </div>

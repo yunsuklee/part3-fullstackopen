@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const mongoose = require('mongoose')
 
 const personSchema = new mongoose.Schema({
@@ -18,7 +19,8 @@ if (process.argv.length < 3) {
   /* Fetching objects from db */
   mongoose
     .connect(url)
-    .then((result) => {
+    .then(result => {
+      console.log(result)
       console.log('phonebook:')
 
       Person.find({}).then(result => { // Every entry
@@ -39,13 +41,14 @@ if (process.argv.length < 3) {
   /* Generating new people */
   mongoose
     .connect(url) // establishing connection to the db
-    .then((result) => {
+    .then(result => {
+      console.log(result)
       // Creates new obj using Person model
       const person = new Person({
         name: name,
         number: number,
       })
-  
+
       // Saving the obj to the db
       return person.save()
     })

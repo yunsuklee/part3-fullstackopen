@@ -4,8 +4,8 @@ require('dotenv').config() // Imports library to handle .env
 const morgan = require('morgan') // Imports middleware to handle requests
 const cors = require('cors') // Imports cors middleware
 const Person = require('./models/person') // Imports Mongoose person model
-const { response } = require('express')
 
+// eslint-disable-next-line no-unused-vars
 morgan.token('data-sent', (req, res) => { // Morgan token to display data sent in POST requests
   return JSON.stringify(req.body)
 })
@@ -41,7 +41,7 @@ app.get('/info', (req, res) => { // Phonebook info
   )
 })
 
-app.get('/api/persons/:id', (req, res, err) => { // Single data fetch
+app.get('/api/persons/:id', (req, res, next) => { // Single data fetch
   Person.findById(req.params.id)
     .then(person => {
       if(person) res.json(person)
@@ -53,20 +53,11 @@ app.get('/api/persons/:id', (req, res, err) => { // Single data fetch
 app.delete('/api/persons/:id', (req, res, next) => { // Deleting single data
   Person.findByIdAndRemove(req.params.id)
     .then(result => {
+      console.log(result)
       res.status(204).end()
     })
     .catch(err => next(err))
 })
-
-/*
-const generateNewId = () => { // Random id generator
-  let id = Math.floor(Math.random() * 100)
-  while (persons.find(person => person.id === id)) { // Should keep running until a unique id is found
-    id = Math.floor(Math.random() * 100)
-  }
-  return id
-}
-*/
 
 app.post('/api/persons', (req, res, next) => { // Creating a new person
   const body = req.body // All info is sent in the request's body
@@ -94,7 +85,7 @@ app.put('/api/persons/:id', (req, res, next) => { // Updating existing person
   const { name, number } = req.body
 
   Person.findByIdAndUpdate(
-    req.params.id, 
+    req.params.id,
     { name, number },
     { new: true, runValidators: true, context: 'query' }
   )
@@ -110,6 +101,7 @@ const unknownEndpoint = (req, res) => { // Handling unkown endpoints
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => { // Server's port
   console.log(`Server running on port ${PORT}`)

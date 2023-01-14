@@ -1,3 +1,5 @@
+import React from 'react'
+
 const PersonForm = (props) => (
   <form onSubmit={props.addPerson} className="personForm">
     <div>
