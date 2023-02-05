@@ -1,49 +1,253 @@
-/* Phonebook App */
+:root {
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+  --nord7: #8fbcbb;
+  --nord8: #88c0d0;
+  --nord9: #81a1c1;
+  --nord10: #5e81ac;
+  --nord11: #bf616a;
+  --nord12: #d08770;
+  --nord13: #ebcb8b;
+  --nord14: #a3be8c;
+  --nord15: #b48ead;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+@font-face {
+  font-family: "Calibre";
+  src: url("../assets/Vazir.woff") format("woff");
+}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
 }
 
-#App {
-  width: 100%;
-  height: 100vh;
-  max-height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-.persons {
+li {
   list-style: none;
 }
 
-.person button, .personForm button {
-  padding: 5px;
-  margin-left: 10px;
-  margin-top: 5px;
-  border: 1px solid black;
-  border-radius: 500px;
+input:focus {
+  outline: none;
 }
 
-.personForm div {
-  margin-top: 5px;
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Calibre", Arial, Helvetica, sans-serif;
 }
 
-/* Notifications */
+body {
+  width: 100%;
+  height: 100vh;
+  color: var(--nord6);
+}
 
-.success, .error {
-  color: green;
-  background: lightgray;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #10162F;
+}
+
+#App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  height: 95%;
+  max-width: 400px;
+  max-height: 700px;
+  padding: 0 15px;
+  border-radius: 20px;
+  background-color: var(--nord0);
+  box-shadow: 0 15px 30px 0 rgb(0, 0, 0, 0.5);
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20%;
+  width: 100%;
+  letter-spacing: 2px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 87%;
+  position: relative;
+}
+
+.filter svg {
+  position: absolute;
+  left: 4%;
+}
+
+.filter input {
+  width: 100%;
+  height: 30px;
+  background-color: var(--nord2);
+  border: none;
+  border-radius: 12px;
+  padding: 4px 6px 4px 14%;
+  color: var(--nord6);
+}
+
+.formButton {
+  width: 10%;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--nord0);
+  color: var(--nord6);
+  font-size: 18px;
+}
+
+.closed {
+  display: none;
+  position: relative;
+}
+
+.opened {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
   padding: 10px;
+  border-radius: 12px;
+  background-color: var(--nord1);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  transition: display 2s ease-in;
+}
+
+form input {
+  width: 100%;
+  height: 30px;
+  padding: 4px 8px;
   margin-bottom: 10px;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--nord2);
+  color: var(--nord6);
+  font-size: 14px;
+}
+
+.formButtonContainer {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  transition: all 300ms ease;
+  cursor: pointer;
+}
+
+.formButton {
+  transition: all 300ms ease;
+  cursor: pointer;
+}
+
+form button {
+  width: 50%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--nord14);
+  color: var(--nord6);
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 300ms ease;
+}
+
+.formButtonContainer:hover,
+.formButton:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.persons {
+  width: 100%;
+  height: calc(80% - 30px);
+  margin: 15px 0;
+  padding: 0 10px 10px 10px;
+  border-radius: 12px;
+  background-color: var(--nord2);
+  overflow-y: scroll;
+}
+
+.person {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  width: 100%;
+  height: 60px;
+  margin-top: 10px;
+  border-radius: 12px;
+  background-color: var(--nord1);
+  align-items: center;
+}
+
+.person svg {
+  font-size: 30px;
+  margin: auto;
+}
+
+.person span {
+  display: block;
+  font-size: 14px;
+}
+
+.person button {
+  border: none;
+  background-color: var(--nord1);
+}
+
+.person button:hover {
+  cursor: pointer;
+}
+
+.person button svg {
+  float: right;
+  padding-right: 10px;
+  font-size: 15px;
+  color: var(--nord11);
+}
+
+#notification {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  color: var(--nord6);
 }
 
 .error {
-  color: red;
+  background-color: var(--nord11);
+}
+
+.success {
+  background-color: var(--nord14);
 }

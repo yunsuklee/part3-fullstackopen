@@ -1,2 +1,0 @@
-*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;margin:0;padding:0}#App{display:flex;flex-direction:column;height:100vh;justify-content:space-around;max-height:500px;width:100%}.persons{list-style:none}.person button,.personForm button{border:1px solid #000;border-radius:500px;margin-left:10px;margin-top:5px;padding:5px}.personForm div{margin-top:5px}.error,.success{background:#d3d3d3;border-radius:5px;border-style:solid;color:green;font-size:20px;margin-bottom:10px;padding:10px}.error{color:red}
-/*# sourceMappingURL=main.fe56eebe.css.map*/

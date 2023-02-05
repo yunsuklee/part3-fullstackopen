@@ -6,6 +6,7 @@ import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import personServices from './services/persons'
 import Notification from './components/Notification'
+import Button from './components/Button'
 
 const App = () => {
   const [persons, setPerson] = useState([])
@@ -14,6 +15,7 @@ const App = () => {
   const [newSearch, setNewSearch] = useState('')
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('')
+  const [showForm, setShowForm] = useState('closed')
 
   useEffect(() => {
     personServices
@@ -132,26 +134,39 @@ const App = () => {
     person.name.toLowerCase().includes(newSearch.toLowerCase())
   )
 
+  const handleShowForm = (event) => {
+    event.preventDefault()
+    console.log('entre')
+
+    showForm === 'closed'
+      ? setShowForm('opened')
+      : setShowForm('closed')
+  }
+
   return (
     <div id="App">
-      <h1>Phonebook</h1>
+      <h1>CONTACTS</h1>
       <Notification
         message={message}
         messageType={messageType}
       />
-      <Filter
-        newSearch={newSearch}
-        handleSearchChange={handleSearchChange}
-      />
-      <h2>Add new contact</h2>
-      <PersonForm
-        addPerson={addPerson}
-        newName={newName}
-        newNumber={newNumber}
-        handleNameChange={handleNameChange}
-        handleNumberChange={handleNumberChange}
-      />
-      <h2>Numbers</h2>
+      <div className='container'>
+        <Filter
+          newSearch={newSearch}
+          handleSearchChange={handleSearchChange}
+        />
+        <Button
+          handleShowForm={handleShowForm}
+        />
+        <PersonForm
+          addPerson={addPerson}
+          newName={newName}
+          newNumber={newNumber}
+          handleNameChange={handleNameChange}
+          handleNumberChange={handleNumberChange}
+          showForm={showForm}
+        />
+      </div>
       <Persons
         personsToShow={personsToShow}
         personsDeleter={handlePersonDelete}
